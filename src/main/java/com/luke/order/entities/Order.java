@@ -3,6 +3,8 @@ package com.luke.order.entities;
 import java.io.Serializable;
 import java.time.Instant;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,11 +20,22 @@ public class Order implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     private Instant moment; // to use instead "date"
 
     @ManyToOne // set as foreign key
     @JoinColumn(name = "client_id") // set a name for the foreign key
     private User client; // association with Client class
+
+    public Order() {
+    }
+    
+    public Order(Long id, Instant moment, User client) {
+        this.id = id;
+        this.moment = moment;
+        this.client = client;
+    }
 
     public Long getId() {
         return id;
