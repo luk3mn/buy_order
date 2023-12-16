@@ -13,6 +13,8 @@ import com.luke.order.repositories.UserRepository;
 import com.luke.order.services.exceptions.DatabaseException;
 import com.luke.order.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service // register this class as a component, to be able to inject automatically with Autowired
 public class UserService {
     @Autowired
@@ -44,9 +46,13 @@ public class UserService {
 
     public User update(Long id, User obj) {
         // User entity = repository.getReferenceById(id);
-        User entity = findById(id);
-        updateData(entity, obj);
-        return repository.save(entity);
+        try {
+            User entity = findById(id);
+            updateData(entity, obj);
+            return repository.save(entity);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     private void updateData(User entity, User obj) {
